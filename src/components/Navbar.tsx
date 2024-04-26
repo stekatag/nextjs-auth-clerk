@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { SignedOut, SignedIn, UserButton, SignInButton } from "@clerk/nextjs";
+import {
+  SignedOut,
+  SignedIn,
+  UserButton,
+  SignInButton,
+  SignUpButton,
+} from "@clerk/nextjs";
 
 export default function Navbar() {
   return (
@@ -13,9 +19,13 @@ export default function Navbar() {
         <div className="flex gap-10">
           <SignedOut>
             <SignInButton />
+            <SignUpButton />
           </SignedOut>
           <SignedIn>
-            <UserButton />
+            <Link href="/profile">
+              <li>Profile</li>
+            </Link>
+            <UserButton afterSignOutUrl="/" />
           </SignedIn>
         </div>
       </ul>
