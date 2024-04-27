@@ -2,7 +2,8 @@ import { ClerkProvider, ClerkLoaded, ClerkLoading } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import SiteHeader from "@/components/SiteHeader";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,22 +19,29 @@ export default function RootLayout({
 }) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
-          <main className="mx-36 text-2xl">
-            <ClerkLoading>
-              <div className="flex items-center justify-center h-screen">
-                <p className="text-2xl">Loading...</p>
-              </div>
-              <Navbar />
-            </ClerkLoading>
-            <ClerkLoaded>
-              <Navbar />
-              <section className="flex flex-col items-center mt-16">
-                {children}
-              </section>
-            </ClerkLoaded>
-          </main>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <main>
+              <ClerkLoading>
+                <div className="flex items-center justify-center h-screen">
+                  <p className="text-2xl">Loading...</p>
+                </div>
+                <SiteHeader />
+              </ClerkLoading>
+              <ClerkLoaded>
+                <SiteHeader />
+                <section className="flex flex-col items-center mt-16">
+                  {children}
+                </section>
+              </ClerkLoaded>
+            </main>
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>
