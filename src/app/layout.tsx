@@ -29,7 +29,7 @@ export default function RootLayout({
             </ClerkLoading>
             <ClerkLoaded>
               <Navbar />
-              <section className="flex flex-col items-center text-center mt-16">
+              <section className="flex flex-col items-center mt-16">
                 {children}
               </section>
             </ClerkLoaded>

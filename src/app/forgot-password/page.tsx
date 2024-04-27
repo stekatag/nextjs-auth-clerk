@@ -3,6 +3,13 @@ import React, { useState } from "react";
 import { useAuth, useSignIn } from "@clerk/nextjs";
 import type { NextPage } from "next";
 import { useRouter } from "next/navigation";
+import { Card, CardTitle, CardDescription } from "@/components/ui/card";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { AlertCircle } from "lucide-react";
 
 const ForgotPasswordPage: NextPage = () => {
   const [email, setEmail] = useState("");
@@ -39,8 +46,20 @@ const ForgotPasswordPage: NextPage = () => {
         setError("");
       })
       .catch((err) => {
-        console.error("error", err.errors[0].longMessage);
-        setError(err.errors[0].longMessage);
+        const errorMessage = err.errors[0].longMessage;
+        console.error("error", errorMessage);
+        // Check if the error message contains the specific error
+        if (
+          errorMessage.includes(
+            "`reset_password_email_code` isn't allowed for `strategy` when user's password is not set."
+          )
+        ) {
+          setError(
+            "It looks like your account was created using a third-party service and does not have a password set directly with us. To reset your access, please log in through the third-party service you used originally."
+          );
+        } else {
+          setError(errorMessage);
+        }
       });
   }
 
@@ -76,61 +95,64 @@ const ForgotPasswordPage: NextPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="bg-[#212121] p-8 rounded shadow-md w-96">
-        <h1>Forgot Password?</h1>
-        <form
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "1em",
-          }}
-          onSubmit={!successfulCreation ? create : reset}
-        >
-          {!successfulCreation && (
-            <>
-              <label htmlFor="email">Please provide your email address</label>
-              <input
-                type="email"
-                placeholder="e.g john@doe.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+    <Card className="flex flex-col gap-4 p-6">
+      <CardTitle className="text-center">Forgot your password?</CardTitle>
+      <CardDescription>
+        Enter your email address to receive a password reset code
+      </CardDescription>
+      <form
+        className="flex flex-col space-y-4"
+        onSubmit={!successfulCreation ? create : reset}
+      >
+        {!successfulCreation && (
+          <>
+            <Label htmlFor="email">Please provide your email address</Label>
+            <Input
+              type="email"
+              placeholder="e.g john@doe.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
 
-              <button>Send password reset code</button>
-              {error && <p>{error}</p>}
-            </>
-          )}
+            <Button>Send password reset code</Button>
+            {error && (
+              <Alert className="text-left max-w-md" variant="destructive">
+                <AlertCircle />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription className="">{error}</AlertDescription>
+              </Alert>
+            )}
+          </>
+        )}
 
-          {successfulCreation && (
-            <>
-              <label htmlFor="password">Enter your new password</label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
+        {successfulCreation && (
+          <>
+            <Label htmlFor="password">Enter your new password</Label>
+            <Input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
 
-              <label htmlFor="password">
-                Enter the password reset code that was sent to your email
-              </label>
-              <input
-                type="text"
-                value={code}
-                onChange={(e) => setCode(e.target.value)}
-              />
+            <Label htmlFor="password">
+              Enter the password reset code that was sent to your email
+            </Label>
+            <Input
+              type="text"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+            />
 
-              <button>Reset</button>
-              {error && <p>{error}</p>}
-            </>
-          )}
+            <Button>Reset</Button>
+            {error && <p>{error}</p>}
+          </>
+        )}
 
-          {secondFactor && (
-            <p>2FA is required, but this UI does not handle that</p>
-          )}
-        </form>
-      </div>
-    </div>
+        {secondFactor && (
+          <p className="">2FA is required, but this UI does not handle that</p>
+        )}
+      </form>
+    </Card>
   );
 };
 

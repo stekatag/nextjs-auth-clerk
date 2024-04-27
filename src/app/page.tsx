@@ -1,3 +1,3 @@
 export default async function Home() {
-  return <h1>Home Page</h1>;
+  return <h1>Next.js Demo Authentication App with Clerk</h1>;
 }
