@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import { ThemeProvider } from "@/components/theme-provider";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,9 +31,8 @@ export default function RootLayout({
             <main>
               <ClerkLoading>
                 <div className="flex items-center justify-center h-screen">
-                  <p className="text-2xl">Loading...</p>
+                  <LoadingSpinner />
                 </div>
-                <SiteHeader />
               </ClerkLoading>
               <ClerkLoaded>
                 <SiteHeader />
